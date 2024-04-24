@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Birds App</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <h1>Birds App</h1>
+
+        <button onclick="refreshBirds()">Refresh Birds</button> <!-- Button to refresh the list of birds -->
+        <button onclick="addBird()">Add Bird</button>
+        <div id="birdsList">
+            <!-- Birds will be displayed here -->
+        </div>
+
+        <h1>Get Bird</h1>
+        <label for="birdIdInput">Enter Bird ID:</label>
+        <input type="text" id="birdIdInput" name="birdIdInput">
+        <button onclick="getBird()">Get Bird</button>
+        <div id="response"></div>
+
+        <script src="script.js"></script>
+    </body>
+</html>

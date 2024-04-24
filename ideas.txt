@@ -1,0 +1,4 @@
+1. scrolldown menu for the get bird function
+2. get bird menu could show more info about the bird
+3. Add bird would need to add more information about the bird 
+4. 
