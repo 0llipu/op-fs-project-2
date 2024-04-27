@@ -1,5 +1,7 @@
+// Load mongoose library
 const mongoose = require('mongoose');
 
+// Create a schema for the bird collection with the required fields of userName, birdName, wingSpan, sex, dateSeen and a default field of dateAdded and an unrequired field of latinBirdName
 const birdSchema = new mongoose.Schema({
 	userName: {
 		type: String,
@@ -34,4 +36,5 @@ const birdSchema = new mongoose.Schema({
 	},
 });
 
+// Export the schema as a model
 module.exports = mongoose.model('Bird', birdSchema);
