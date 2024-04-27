@@ -1,73 +1,15 @@
 // Function to refresh the list of birds
 window.onload = function () {
 	getAllBirds(); // Call getAllBirds() when the page is loaded
+	populateBirdIds(); // Call populateBirdIds() when the page is loaded
 };
+
+document.getElementById('refreshBirds').addEventListener('click', function (e) {
+	getAllBirds();
+});
 
 async function refreshBirds() {
 	getAllBirds(); // Call the function to get all birds again
-}
-
-// Function to update a bird's name
-async function updateBirdName(id) {
-	try {
-		const existingNameElement = document.getElementById(`birdName-${id}`);
-		if (!existingNameElement) {
-			console.error(`Element with ID 'birdName-${id}' not found.`);
-			return;
-		}
-
-		const existingName = existingNameElement.textContent; // Get the existing name from the list
-		const newName = prompt(
-			`Enter new name for the bird (current name: ${existingName}):`
-		);
-
-		if (newName === null) {
-			// User canceled the prompt
-			return;
-		}
-
-		if (newName === '') {
-			alert('Please enter a valid name.'); // Notify the user to enter a valid name
-			return;
-		}
-
-		if (newName === existingName) {
-			alert('Please enter a different name to update.'); // Notify the user to enter a different name
-			return;
-		}
-
-		const response = await fetch(`/api/update/${id}`, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ name: newName }),
-		});
-
-		if (!response.ok) {
-			const errorMessage = await response.text();
-			alert(errorMessage); // Display an alert with the error message
-		} else {
-			refreshBirds();
-		}
-	} catch (err) {
-		console.error('Error:', err);
-	}
-}
-
-// Function to delete a bird
-async function deleteBird(id) {
-	const confirmation = confirm('Are you sure you want to delete this bird?');
-	if (confirmation) {
-		try {
-			await fetch(`/api/delete/${id}`, {
-				method: 'DELETE',
-			});
-			refreshBirds();
-		} catch (err) {
-			console.error('Error:', err);
-		}
-	}
 }
 
 async function getAllBirds() {
@@ -77,23 +19,14 @@ async function getAllBirds() {
 		const birdsListContainer = document.getElementById('birdsList');
 
 		// Clear existing content
-		birdsListContainer.innerHTML = '';
+		birdsListContainer.innerHTML = '<br>';
 
 		// Add each bird to the list
 		birds.forEach((bird) => {
 			const birdItem = document.createElement('div');
-			birdItem.textContent = `ID: ${bird._id}, Name: ${bird.name}`;
-
-			// Add buttons for updating and deleting each bird
-			const updateButton = document.createElement('button');
-			updateButton.textContent = 'Update';
-			updateButton.onclick = () => updateBirdName(bird._id);
-			birdItem.appendChild(updateButton);
-
-			const deleteButton = document.createElement('button');
-			deleteButton.textContent = 'Delete';
-			deleteButton.onclick = () => deleteBird(bird._id);
-			birdItem.appendChild(deleteButton);
+			const birdDate = new Date(bird.dateSeen);
+			const formattedDate = birdDate.toLocaleDateString(); // Format: MM/DD/YYYY
+			birdItem.textContent = `User name: ${bird.userName}, Bird: ${bird.birdName}, Date seen: ${formattedDate} `;
 
 			birdsListContainer.appendChild(birdItem);
 		});
@@ -101,45 +34,181 @@ async function getAllBirds() {
 		console.error('Error:', err);
 	}
 }
-// Function to add a new bird to the database
-async function addBird() {
+
+async function updateBird(id) {
 	try {
-		const newName = prompt('Enter name for the new bird:');
+		const response = await fetch(`/api/${id}`); // Fetch current bird details
+		if (!response.ok) {
+			throw new Error('Failed to fetch bird details');
+		}
+		const bird = await response.json();
 
-		if (newName === null || newName === '') {
-			// User canceled the prompt or entered an empty name
+		// Show current information for the bird
+		const existingBirdName = bird.birdName;
+		const existingLatinBirdName = bird.latinBirdName;
+		const existingWingspan = bird.wingSpan;
+		const existingSex = bird.sex;
+
+		const newBirdName = prompt(
+			`Enter new name for the bird (current name: ${existingBirdName}):`,
+			existingBirdName
+		);
+		const newLatinBirdName = prompt(
+			`Enter new Latin name for the bird (current Latin name: ${existingLatinBirdName}):`,
+			existingLatinBirdName
+		);
+		const newWingspan = prompt(
+			`Enter new wingspan for the bird (current wingspan: ${existingWingspan}):`,
+			existingWingspan
+		);
+		const newSex = prompt(
+			`Enter new sex for the bird (current sex: ${existingSex}):`,
+			existingSex
+		);
+
+		if (
+			newBirdName === null ||
+			newLatinBirdName === null ||
+			newWingspan === null ||
+			newSex === null
+		) {
+			// User canceled the prompt
 			return;
 		}
 
-		// Check if the entered name already exists in the list of birds
-		const birdsResponse = await fetch('/api/getall');
-		const birds = await birdsResponse.json();
-
-		if (birds.some((bird) => bird.name === newName)) {
-			alert('A bird with this name already exists.'); // Display an alert if the name already exists
+		if (
+			newBirdName === '' ||
+			newLatinBirdName === '' ||
+			newWingspan === '' ||
+			newSex === ''
+		) {
+			alert('Please enter valid values for all fields.'); // Notify the user to enter valid values for all fields
 			return;
 		}
 
-		const response = await fetch('/api/add', {
-			method: 'POST',
+		const responseUpdate = await fetch(`/api/update/${id}`, {
+			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ name: newName }),
+			body: JSON.stringify({
+				name: newBirdName,
+				latinName: newLatinBirdName,
+				wingspan: newWingspan,
+				sex: newSex,
+			}),
 		});
 
-		if (!response.ok) {
-			const errorMessage = await response.text();
+		if (!responseUpdate.ok) {
+			const errorMessage = await responseUpdate.text();
 			alert(errorMessage); // Display an alert with the error message
 		} else {
-			refreshBirds(); // Update the list of birds
+			getAllBirds(); // Call getAllBirds() when bird is updated
+			populateBirdIds(); // Call populateBirdIds() when bird is updated
 		}
 	} catch (err) {
 		console.error('Error:', err);
 	}
 }
+
+// Function to delete a bird
+async function deleteBird(id) {
+	try {
+		// Fetch the current bird details from the server
+		const response = await fetch(`/api/${id}`);
+		if (!response.ok) {
+			throw new Error('Failed to fetch bird details');
+		}
+		const birdDetails = await response.json();
+		const currentBirdName = birdDetails.birdName;
+
+		const birdName = prompt(
+			`Please enter the name of the bird "${currentBirdName}" to confirm deletion:`
+		);
+		if (birdName) {
+			// Check if the entered bird name matches the actual bird name
+			if (
+				birdName.trim().toLowerCase() ===
+				currentBirdName.trim().toLowerCase()
+			) {
+				const confirmation = confirm(
+					`Are you sure you want to delete the bird "${currentBirdName}"?`
+				);
+				if (confirmation) {
+					try {
+						await fetch(`/api/delete/${id}`, {
+							method: 'DELETE',
+						});
+					} catch (err) {
+						console.error('Error:', err);
+					}
+				}
+			} else {
+				alert(
+					'The entered bird name does not match the actual bird name. Deletion aborted.'
+				);
+			}
+		} else {
+			alert('Please enter the name of the bird to confirm deletion.');
+		}
+		getAllBirds(); // Call getAllBirds() when bird is deleted
+		populateBirdIds(); // Call populateBirdIds() when bird is deleted
+	} catch (err) {
+		console.error('Error:', err);
+	}
+}
+
+document
+	.getElementById('addBirdForm')
+	.addEventListener('submit', async function (event) {
+		event.preventDefault(); // Prevent the default form submission behavior
+
+		try {
+			const formData = new FormData(this); // Create FormData object from the form
+			const formDataObject = Object.fromEntries(formData.entries()); // Convert FormData to object
+
+			// Check if the birdSeen date is in the future
+			const dateBirdSeen = new Date(formDataObject.dateSeen);
+			const currentDate = new Date();
+			if (dateBirdSeen > currentDate) {
+				alert('Bird seen date cannot be in the future.'); // Display an alert if the date is in the future
+				return;
+			}
+
+			// Check if the birdSeen date is before 1986
+			const minDate = new Date('1986-01-01');
+			if (dateBirdSeen < minDate) {
+				alert('Bird seen date cannot be before 1986.'); // Display an alert if the date is before 1986
+				return;
+			}
+
+			const response = await fetch('/api/add', {
+				// Submit form data to backend route
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json', // Specify JSON content type
+				},
+				body: JSON.stringify(formDataObject), // Convert object to JSON string
+			});
+
+			if (!response.ok) {
+				const errorMessage = await response.text();
+				alert(errorMessage); // Display an alert with the error message
+			} else {
+				alert('Bird added successfully!'); // Display success message
+				// Reset the form
+				this.reset();
+				getAllBirds(); // Call getAllBirds() when bird is added
+				populateBirdIds(); // Call populateBirdIds() when bird is added
+			}
+		} catch (err) {
+			console.error('Error:', err);
+			alert('An error occurred while adding the bird.'); // Display generic error message
+		}
+	});
+
 async function getBird() {
-	const birdId = document.getElementById('birdIdInput').value;
+	const birdId = document.getElementById('birdIdSelect').value;
 	const responseDiv = document.getElementById('response');
 
 	try {
@@ -150,13 +219,69 @@ async function getBird() {
 			throw new Error('Bird not found');
 		}
 
-		const data = await response.json();
+		const bird = await response.json();
+
+		// Create a div element to contain the bird data and buttons
+		const birdDiv = document.createElement('div');
 
 		// Update HTML to display bird data
-		responseDiv.innerHTML = `ID: ${data._id}, Name: ${data.name}`;
+		birdDiv.innerHTML = `<br> User name: ${bird.userName} <br> Bird: ${
+			bird.birdName
+		} <br> Bird in latin: ${bird.latinBirdName} <br> Wingspan: ${
+			bird.wingSpan
+		} cm <br> Sex: ${bird.sex} <br> Date seen: ${new Date(
+			bird.dateSeen
+		).toLocaleDateString()} <br> Date added: ${new Date(
+			bird.dateAdded
+		).toLocaleDateString()} <br><br><strong> If You wish to update or delete a bird You can do it here but be careful with Your actions, there is no possibilities to undo what You do. <strong><br><br>`;
+
+		// Create update button
+		const updateButton = document.createElement('button');
+		updateButton.textContent = 'Update bird information';
+		updateButton.onclick = () => updateBird(bird._id);
+		birdDiv.appendChild(updateButton);
+
+		// Create delete button
+		const deleteButton = document.createElement('button');
+		deleteButton.textContent = 'Delete this bird';
+		deleteButton.onclick = () => deleteBird(bird._id);
+		birdDiv.appendChild(deleteButton);
+
+		// Clear the responseDiv and append the birdDiv
+		responseDiv.innerHTML = '';
+		responseDiv.appendChild(birdDiv);
 	} catch (err) {
 		// Handle errors
 		responseDiv.innerHTML = 'Error: Bird not found';
 		console.error(err);
+	}
+}
+
+// Function to populate the dropdown menu with bird IDs
+async function populateBirdIds() {
+	try {
+		const response = await fetch('/api/getall');
+		const birds = await response.json();
+		const birdIdSelect = document.getElementById('birdIdSelect');
+
+		// Clear existing options
+		birdIdSelect.innerHTML = '';
+
+		// Add each bird ID as an option
+		birds.forEach((bird) => {
+			// Create an option element
+			const option = document.createElement('option');
+
+			// Set the value and text content of the option
+			option.value = bird._id;
+			option.textContent = `${bird.birdName} - User: ${
+				bird.userName
+			}, Date Seen: ${new Date(bird.dateSeen).toLocaleDateString()}`;
+
+			// Append the option to the select element
+			birdIdSelect.appendChild(option);
+		});
+	} catch (err) {
+		console.error('Error:', err);
 	}
 }

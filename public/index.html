@@ -8,18 +8,48 @@
     </head>
     <body>
         <h1>Birds App</h1>
-
-        <button onclick="refreshBirds()">Refresh Birds</button> <!-- Button to refresh the list of birds -->
-        <button onclick="addBird()">Add Bird</button>
+        <p>Here You can find a listing with basic information of different sightings of birds seen.</p>
+        <br>
+        <button id="refreshBirds">Refresh Birds</button> <!-- Button to refresh the list of birds -->
         <div id="birdsList">
+            <br>
             <!-- Birds will be displayed here -->
         </div>
 
-        <h1>Get Bird</h1>
-        <label for="birdIdInput">Enter Bird ID:</label>
-        <input type="text" id="birdIdInput" name="birdIdInput">
-        <button onclick="getBird()">Get Bird</button>
+        <h1>More Information</h1>
+        <p>To get more information of one sighting please select a sighting here and click on "More Info"</p>
+        <br>
+        <label for="birdIdSelect">Select sightning:</label>
+        <select id="birdIdSelect"></select> <!-- Dropdown menu for selecting bird ID -->
+        <button onclick="getBird()">More info</button>
         <div id="response"></div>
+
+        <h1>Add Bird</h1>
+        <form id="addBirdForm">
+            <label for="userName">User Name:</label>
+            <input type="text" id="userName" name="userName" placeholder="Please enter Your name.." required>
+            <br>
+            <label for="birdName">Bird Name:</label>
+            <input type="text" id="birdName" name="birdName" placeholder="eg. Lokki.." required>
+            <br>
+            <label for="latinBirdName">Latin Bird Name:</label>
+            <input type="text" id="latinBirdName" name="latinBirdName" placeholder="Can be left empty">
+            <br>
+            <label for="wingSpan">Wing Span:</label>
+            <input type="number" id="wingSpan" name="wingSpan" placeholder="At least take a guess" required>
+            <br>
+            <label for="sex">Sex:</label>
+            <select id="sex" name="sex" required>
+                <option value="undefined">Undefined</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+            <br>
+            <label for="dateSeen">Date the bird was seen:</label>
+            <input type="date" id="dateSeen" name="dateSeen">
+
+            <button type="submit">Add Bird</button>
+        </form>
 
         <script src="script.js"></script>
     </body>

@@ -27,7 +27,7 @@ main().catch((err) => console.log(err));
 
 async function main() {
 	await mongoose.connect(connect_string);
-	console.log('Connection to db open');
+	console.log('Connection to bird database is now open');
 }
 
 app.listen(PORT, function () {
