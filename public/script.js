@@ -1,35 +1,33 @@
-// Function to refresh the list of birds
+// Purpose: Frontend JavaScript code for the Birdwatcher app
+// Run function to get all birds and populate the dropdown menu with bird IDs when the page is loaded
 window.onload = function () {
 	getAllBirds(); // Call getAllBirds() when the page is loaded
 	populateBirdIds(); // Call populateBirdIds() when the page is loaded
 };
-
+// Add an event listener to the refreshBirds button to call the getAllBirds function when clicked
 document.getElementById('refreshBirds').addEventListener('click', function (e) {
 	getAllBirds();
 });
 
-async function refreshBirds() {
-	getAllBirds(); // Call the function to get all birds again
-}
-
+// Function to get all birds from the server and display them in the birdsList container
 async function getAllBirds() {
+	// Fetch all birds from the server with a GET request to the /api/getall route
 	try {
 		const response = await fetch('/api/getall');
 		const birds = await response.json();
 		const birdsListContainer = document.getElementById('birdsList');
-
-		// Clear existing content
+		// Clear existing content and add a line break
 		birdsListContainer.innerHTML = '<br>';
-
-		// Add each bird to the list
+		// Add each bird to the list container
 		birds.forEach((bird) => {
 			const birdItem = document.createElement('div');
 			const birdDate = new Date(bird.dateSeen);
-			const formattedDate = birdDate.toLocaleDateString(); // Format: MM/DD/YYYY
+			const formattedDate = birdDate.toLocaleDateString(); // Format the date as a string in the format MM/DD/YYYY
 			birdItem.textContent = `User name: ${bird.userName}, Bird: ${bird.birdName}, Date seen: ${formattedDate} `;
-
+			// Add the bird item to the birdsList container
 			birdsListContainer.appendChild(birdItem);
 		});
+		// Catch any errors that occur during the fetch request
 	} catch (err) {
 		console.error('Error:', err);
 	}

@@ -1,0 +1,49 @@
+/* CSS Reset */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+/* Add your nature theme styles below */
+
+body {
+	background-color: #e6f2ff;
+	color: #333333;
+	font-family: Arial, sans-serif;
+}
+
+h1 {
+	color: #006600;
+	font-size: 24px;
+	font-weight: bold;
+}
+
+p {
+	color: #333333;
+	font-size: 16px;
+	line-height: 1.5;
+}
+
+a {
+	color: #0099ff;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+.button {
+	background-color: #0099ff;
+	color: #ffffff;
+	padding: 10px 20px;
+	border-radius: 5px;
+	text-transform: uppercase;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.button:hover {
+	background-color: #0066cc;
+}
