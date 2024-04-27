@@ -10,7 +10,7 @@ router.get('/getall', async (req, res) => {
 	try {
 		// Find all birds in the database with the find() method and store them in the birds variable
 		const birds = await bird.find();
-		console.log('Every bird in the database:');
+		console.log('Every bird in the database listed here:');
 		console.log(birds);
 		res.status(200).json(birds); // Send status code 200 to client for successful response and also send the birds in JSON format
 	} catch (err) {
@@ -37,7 +37,7 @@ router.get('/:id', async (req, res) => {
 		const birdName = birdNameWithId.birdName;
 		// Send the bird's id and name in the response
 		console.log(
-			`The bird was found with an ID for the bird: ${birdId} and the name is: ${birdName}`
+			`Get route is working and the bird was found with an ID: ${birdId} and the name: ${birdName} for the bird`
 		);
 	} catch (err) {
 		// Error handling
@@ -67,7 +67,7 @@ router.post('/add', async (req, res) => {
 		await newBird.save();
 		console.log(`Bird named: ${newBird.birdName} added successfully to db`);
 		res.status(200).send(
-			`Bird named: ${newBird.birdName} added successfully to db`
+			`Add route is working and the bird named: ${newBird.birdName} added successfully to db`
 		); // Send status code 200 to client for successful response and also send a success message to the client aswell as to the console
 	} catch (err) {
 		// Error handling
@@ -92,6 +92,7 @@ router.delete('/delete/:id', async (req, res) => {
 		res.status(200).send(
 			'Bird with ID: ' + birdId + ' deleted successfully'
 		); // Send status code 200 to client for successful response and also send a success message to the client
+		console.log('Bird deleted successfully:', deletedBird); // Log the deleted bird to the console
 	} catch (err) {
 		// Error handling
 		console.error(err);

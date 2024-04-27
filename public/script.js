@@ -1,4 +1,5 @@
-// Purpose: Frontend JavaScript code for the Birdwatcher app
+// Purpose: Frontend JavaScript code for the Birdwatcher application
+
 // Run function to get all birds and populate the dropdown menu with bird IDs when the page is loaded
 window.onload = function () {
 	getAllBirds(); // Call getAllBirds() when the page is loaded
@@ -8,6 +9,9 @@ window.onload = function () {
 document.getElementById('refreshBirds').addEventListener('click', function (e) {
 	getAllBirds();
 });
+
+const infoDiv = document.getElementById('info');
+const responseDiv = document.getElementById('response');
 
 // Function to get all birds from the server and display them in the birdsList container
 async function getAllBirds() {
@@ -64,6 +68,7 @@ async function updateBird(id) {
 
 		// Display input fields in a form
 		const form = document.createElement('form');
+		const modifiedFields = {}; // Keep track of modified fields
 		fieldOrder.forEach((fieldName) => {
 			if (fieldName === 'sex') {
 				// Create dropdown menu for the "Sex" field
@@ -86,6 +91,11 @@ async function updateBird(id) {
 				// Set the selected option based on the current value of the sex field
 				selectField.value = bird[fieldName];
 
+				// Add change event listener to track modifications
+				selectField.addEventListener('change', () => {
+					modifiedFields[fieldName] = selectField.value;
+				});
+
 				form.appendChild(label);
 				form.appendChild(selectField);
 			} else if (
@@ -106,6 +116,11 @@ async function updateBird(id) {
 				const label = document.createElement('label');
 				label.textContent = `${fieldLabels[fieldName]}: `;
 				const inputField = createInputField(fieldName, bird[fieldName]);
+
+				// Add input event listener to track modifications
+				inputField.addEventListener('input', () => {
+					modifiedFields[fieldName] = inputField.value;
+				});
 				form.appendChild(label);
 				form.appendChild(inputField);
 			}
@@ -113,43 +128,81 @@ async function updateBird(id) {
 		});
 
 		// Add a submit button
-		const submitButton = document.createElement('button');
-		submitButton.textContent = 'Save';
-		submitButton.onclick = async () => {
+		const saveButton = document.createElement('button');
+		saveButton.textContent = 'Save';
+		saveButton.onclick = async (event) => {
 			event.preventDefault(); // Prevent default form submission behavior
-			try {
-				const updatedData = {};
-				// Iterate through input fields and populate updatedData
-				const inputFields = form.querySelectorAll('input, select');
-				inputFields.forEach((inputField) => {
-					updatedData[inputField.name] = inputField.value;
-				});
+			saveUpdatedBird(); // Call saveUpdatedBird() when the submit button is clicked
+		};
+		// Add keydown event listener to the document
+		document.addEventListener('keydown', (event) => {
+			// Check if the pressed key is the "Enter" key (key code 13)
+			if (event.keyCode === 13) {
+				// Check if the save button is visible
+				if (saveButton.style.display !== 'none') {
+					// Prevent default behavior of the "Enter" key
+					event.preventDefault();
+					// Trigger the click event of the submit button
+					saveButton.click();
+				}
+			}
+		});
+		// Add keydown event listener to the document
+		document.addEventListener('keydown', (event) => {
+			// Check if the pressed key is the "Enter" key (key code 13)
+			if (event.keyCode === 27) {
+				// Check if the save button is visible
+				if (cancelButton.style.display !== 'none') {
+					// Prevent default behavior of the "Enter" key
+					event.preventDefault();
+					// Trigger the click event of the submit button
+					cancelButton.click();
+				}
+			}
+		});
 
+		async function saveUpdatedBird() {
+			// Check if any fields have been modified
+			if (Object.keys(modifiedFields).length === 0) {
+				infoDiv.innerHTML =
+					'No changes were made, press cancel if You want to cancel.'; // Display a message in the infoDiv
+				return; // Exit the function if no changes were made
+			}
+			try {
 				const responseUpdate = await fetch(`/api/update/${id}`, {
 					method: 'PUT',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify(updatedData),
+					body: JSON.stringify(modifiedFields),
 				});
 
 				if (!responseUpdate.ok) {
 					const errorMessage = await responseUpdate.text();
 					alert(errorMessage); // Display an alert with the error message
 				} else {
-					alert('Bird information updated successfully!'); // Display success message
+					infoDiv.innerHTML =
+						'Bird information updated successfully!'; // Show information of update in the infoDiv
 					console.log('Bird information updated successfully!'); // Log success message
-					getBird(id); // Call getBird() to display updated bird information
+					getBird(id); // Call getBird() to display updated bird information'
 				}
 			} catch (err) {
 				console.error('Error:', err);
 			}
-		};
+		}
 
-		form.appendChild(submitButton); // Append the submit button to the form
+		// Add a cancel button
+		const cancelButton = document.createElement('button');
+		cancelButton.textContent = 'Cancel';
+		cancelButton.onclick = (event) => {
+			event.preventDefault(); // Prevent default form submission behavior
+			getBird(id); // Call getBird() to display the bird information if the cancel button is clicked
+			infoDiv.innerHTML = 'Updating was canceled by the user'; // Clear the infoDiv
+		};
+		form.appendChild(cancelButton);
+		form.appendChild(saveButton); // Append the submit button to the form
 
 		// Replace existing content with the form
-		const responseDiv = document.getElementById('response');
 		responseDiv.innerHTML = '';
 		responseDiv.appendChild(form);
 	} catch (err) {
@@ -204,6 +257,10 @@ async function deleteBird(id) {
 						await fetch(`/api/delete/${id}`, {
 							method: 'DELETE',
 						});
+						infoDiv.innerHTML = 'Bird deleted successfully!'; // Show information of deletion in the infoDiv
+						console.log('Bird deleted successfully!'); // Log success message
+						getAllBirds(); // Call getAllBirds() when bird is deleted
+						populateBirdIds(); // Call populateBirdIds() when bird is deleted
 					} catch (err) {
 						console.error('Error:', err);
 					}
@@ -216,10 +273,6 @@ async function deleteBird(id) {
 		} else {
 			alert('Please enter the name of the bird to confirm deletion.');
 		}
-		alert('Bird deleted successfully!'); // Display success message
-		console.log('Bird deleted successfully!'); // Log success message
-		getAllBirds(); // Call getAllBirds() when bird is deleted
-		populateBirdIds(); // Call populateBirdIds() when bird is deleted
 	} catch (err) {
 		console.error('Error:', err);
 	}
@@ -242,10 +295,10 @@ document
 				return;
 			}
 
-			// Check if the birdSeen date is before 1986
-			const minDate = new Date('1986-01-01');
+			// Check if the birdSeen date is before 1860
+			const minDate = new Date('1860-01-01');
 			if (dateBirdSeen < minDate) {
-				alert('Bird seen date cannot be before 1986.'); // Display an alert if the date is before 1986
+				alert('Bird seen date cannot be before 1860.'); // Display an alert if the date is before 1986
 				return;
 			}
 
@@ -262,7 +315,7 @@ document
 				const errorMessage = await response.text();
 				alert(errorMessage); // Display an alert with the error message
 			} else {
-				alert('Bird added successfully!'); // Display success message
+				infoDiv.innerHTML = 'Bird added successfully!'; // Show information of addition in the infoDiv
 				// Reset the form
 				this.reset();
 				getAllBirds(); // Call getAllBirds() when bird is added
@@ -276,7 +329,8 @@ document
 
 async function getBird() {
 	const birdId = document.getElementById('birdIdSelect').value;
-	const responseDiv = document.getElementById('response');
+
+	infoDiv.innerHTML = ''; // Clear the infoDiv
 
 	try {
 		const response = await fetch(`/api/${birdId}`);
