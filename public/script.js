@@ -165,7 +165,7 @@ async function updateBird(id) {
 			// Check if any fields have been modified
 			if (Object.keys(modifiedFields).length === 0) {
 				infoDiv.innerHTML =
-					'No changes were made, press cancel if You want to cancel.'; // Display a message in the infoDiv
+					'No changes were made, press ESC or cancel if You wish to abort.'; // Display a message in the infoDiv
 				return; // Exit the function if no changes were made
 			}
 			try {
@@ -181,10 +181,10 @@ async function updateBird(id) {
 					const errorMessage = await responseUpdate.text();
 					alert(errorMessage); // Display an alert with the error message
 				} else {
+					getBird(id); // Call getBird() to display updated bird information'
 					infoDiv.innerHTML =
 						'Bird information updated successfully!'; // Show information of update in the infoDiv
 					console.log('Bird information updated successfully!'); // Log success message
-					getBird(id); // Call getBird() to display updated bird information'
 				}
 			} catch (err) {
 				console.error('Error:', err);
@@ -197,7 +197,7 @@ async function updateBird(id) {
 		cancelButton.onclick = (event) => {
 			event.preventDefault(); // Prevent default form submission behavior
 			getBird(id); // Call getBird() to display the bird information if the cancel button is clicked
-			infoDiv.innerHTML = 'Updating was canceled by the user'; // Clear the infoDiv
+			infoDiv.innerHTML = 'Updating canceled by the user.'; // Clear the infoDiv
 		};
 		form.appendChild(cancelButton);
 		form.appendChild(saveButton); // Append the submit button to the form
@@ -330,7 +330,7 @@ document
 async function getBird() {
 	const birdId = document.getElementById('birdIdSelect').value;
 
-	infoDiv.innerHTML = ''; // Clear the infoDiv
+	infoDiv.innerHTML = ''; // Clear the infoDiv	'
 
 	try {
 		const response = await fetch(`/api/${birdId}`);
