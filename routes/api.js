@@ -1,8 +1,8 @@
-// Load the express library
+// Load the express package to create a new express application
 const express = require('express');
-// Load the bird model
+// Load the bird model schema from the model.js file in the modules folder
 const bird = require('../modules/model');
-// Create a new router
+// Create a new router instance to define the routes for the API
 const router = express.Router();
 
 // Define the route /getall to get all birds from the database

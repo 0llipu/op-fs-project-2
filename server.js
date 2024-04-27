@@ -1,4 +1,7 @@
+// Description: This file is the entry point for the server. It sets up the server and connects to the database.
+// Apply the dotenv package to load environment variables from a .env file.
 require('dotenv').config();
+// Import the express package to create a new express application.
 const express = require('express');
 const api_router = require('./routes/api');
 var mongoose = require('mongoose');
