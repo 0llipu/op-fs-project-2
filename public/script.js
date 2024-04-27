@@ -41,72 +41,139 @@ async function updateBird(id) {
 		}
 		const bird = await response.json();
 
-		// Show current information for the bird
-		const existingBirdName = bird.birdName;
-		const existingLatinBirdName = bird.latinBirdName;
-		const existingWingspan = bird.wingSpan;
-		const existingSex = bird.sex;
+		// Define the desired order of fields
+		const fieldOrder = [
+			'userName',
+			'birdName',
+			'latinBirdName',
+			'wingSpan',
+			'sex',
+			'dateSeen',
+			'dateAdded',
+		];
 
-		const newBirdName = prompt(
-			`Enter new name for the bird (current name: ${existingBirdName}):`,
-			existingBirdName
-		);
-		const newLatinBirdName = prompt(
-			`Enter new Latin name for the bird (current Latin name: ${existingLatinBirdName}):`,
-			existingLatinBirdName
-		);
-		const newWingspan = prompt(
-			`Enter new wingspan for the bird (current wingspan: ${existingWingspan}):`,
-			existingWingspan
-		);
-		const newSex = prompt(
-			`Enter new sex for the bird (current sex: ${existingSex}):`,
-			existingSex
-		);
+		const fieldLabels = {
+			userName: 'User name',
+			birdName: 'Bird',
+			latinBirdName: 'Bird in latin',
+			wingSpan: 'Wingspan',
+			sex: 'Sex',
+			dateSeen: 'Date seen',
+			dateAdded: 'Date added',
+		};
 
-		if (
-			newBirdName === null ||
-			newLatinBirdName === null ||
-			newWingspan === null ||
-			newSex === null
-		) {
-			// User canceled the prompt
-			return;
-		}
+		// Display input fields in a form
+		const form = document.createElement('form');
+		fieldOrder.forEach((fieldName) => {
+			if (fieldName === 'sex') {
+				// Create dropdown menu for the "Sex" field
+				const label = document.createElement('label');
+				label.textContent = `${fieldLabels[fieldName]}: `;
+				const selectField = document.createElement('select');
+				selectField.name = fieldName;
 
-		if (
-			newBirdName === '' ||
-			newLatinBirdName === '' ||
-			newWingspan === '' ||
-			newSex === ''
-		) {
-			alert('Please enter valid values for all fields.'); // Notify the user to enter valid values for all fields
-			return;
-		}
+				// Define sex options
+				const sexOptions = ['Undefined', 'Male', 'Female'];
 
-		const responseUpdate = await fetch(`/api/update/${id}`, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				name: newBirdName,
-				latinName: newLatinBirdName,
-				wingspan: newWingspan,
-				sex: newSex,
-			}),
+				// Populate the dropdown menu with options
+				sexOptions.forEach((option) => {
+					const optionElement = document.createElement('option');
+					optionElement.value = option.toLowerCase(); // Use lowercase value for consistency
+					optionElement.textContent = option;
+					selectField.appendChild(optionElement);
+				});
+
+				// Set the selected option based on the current value of the sex field
+				selectField.value = bird[fieldName];
+
+				form.appendChild(label);
+				form.appendChild(selectField);
+			} else if (
+				fieldName === 'userName' ||
+				fieldName === 'dateSeen' ||
+				fieldName === 'dateAdded'
+			) {
+				// Create text elements for username, date seen, and date added
+				const textElement = document.createElement('div');
+				textElement.textContent = `${fieldLabels[fieldName]}: ${
+					fieldName === 'dateSeen' || fieldName === 'dateAdded'
+						? new Date(bird[fieldName]).toLocaleDateString()
+						: bird[fieldName]
+				}`;
+				form.appendChild(textElement);
+			} else {
+				// Create input fields for other fields
+				const label = document.createElement('label');
+				label.textContent = `${fieldLabels[fieldName]}: `;
+				const inputField = createInputField(fieldName, bird[fieldName]);
+				form.appendChild(label);
+				form.appendChild(inputField);
+			}
+			form.appendChild(document.createElement('br')); // Add line break after each field
 		});
 
-		if (!responseUpdate.ok) {
-			const errorMessage = await responseUpdate.text();
-			alert(errorMessage); // Display an alert with the error message
-		} else {
-			getAllBirds(); // Call getAllBirds() when bird is updated
-			populateBirdIds(); // Call populateBirdIds() when bird is updated
-		}
+		// Add a submit button
+		const submitButton = document.createElement('button');
+		submitButton.textContent = 'Save';
+		submitButton.onclick = async () => {
+			event.preventDefault(); // Prevent default form submission behavior
+			try {
+				const updatedData = {};
+				// Iterate through input fields and populate updatedData
+				const inputFields = form.querySelectorAll('input, select');
+				inputFields.forEach((inputField) => {
+					updatedData[inputField.name] = inputField.value;
+				});
+
+				const responseUpdate = await fetch(`/api/update/${id}`, {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(updatedData),
+				});
+
+				if (!responseUpdate.ok) {
+					const errorMessage = await responseUpdate.text();
+					alert(errorMessage); // Display an alert with the error message
+				} else {
+					alert('Bird information updated successfully!'); // Display success message
+					console.log('Bird information updated successfully!'); // Log success message
+					getBird(id); // Call getBird() to display updated bird information
+				}
+			} catch (err) {
+				console.error('Error:', err);
+			}
+		};
+
+		form.appendChild(submitButton); // Append the submit button to the form
+
+		// Replace existing content with the form
+		const responseDiv = document.getElementById('response');
+		responseDiv.innerHTML = '';
+		responseDiv.appendChild(form);
 	} catch (err) {
 		console.error('Error:', err);
 	}
+}
+
+// Helper function to format date as DD/MM/YYYY
+function formatDate(dateString) {
+	const date = new Date(dateString);
+	const day = date.getDate().toString().padStart(2, '0');
+	const month = (date.getMonth() + 1).toString().padStart(2, '0');
+	const year = date.getFullYear();
+	return `${day}/${month}/${year}`;
+}
+
+// Helper function to create a single input field
+function createInputField(name, value, readonly = false) {
+	const inputField = document.createElement('input');
+	inputField.type = 'text';
+	inputField.name = name;
+	inputField.value = value;
+	inputField.readOnly = readonly; // Set the readonly attribute
+	return inputField;
 }
 
 // Function to delete a bird
@@ -149,6 +216,8 @@ async function deleteBird(id) {
 		} else {
 			alert('Please enter the name of the bird to confirm deletion.');
 		}
+		alert('Bird deleted successfully!'); // Display success message
+		console.log('Bird deleted successfully!'); // Log success message
 		getAllBirds(); // Call getAllBirds() when bird is deleted
 		populateBirdIds(); // Call populateBirdIds() when bird is deleted
 	} catch (err) {
