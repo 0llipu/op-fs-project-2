@@ -41,8 +41,6 @@ async function main() {
 // Start the server to listen on the defined port number.
 app.listen(PORT, function () {
 	console.log(
-		'The server for the op-fs-project-2 server is running on port ' +
-			PORT +
-			'!'
+		'The server for the op-fs-project-2 is running on port ' + PORT + '!'
 	);
 });
