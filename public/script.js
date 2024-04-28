@@ -82,7 +82,7 @@ async function createListOfBirds() {
 		birds.forEach((bird) => {
 			const birdDate = new Date(bird.dateSeen); // Create a new Date object from the dateSeen field
 			const options = {
-				year: '2-digit',
+				year: '4-digit',
 				month: '2-digit',
 				day: '2-digit',
 			};
