@@ -215,11 +215,13 @@ table {
 	select {
 		padding: 0.5rem;
 		font-size: 0.75rem;
+		margin-bottom: 0.5rem;
 	}
 
 	input[type='date'] {
 		padding: 0.5rem;
 		font-size: 0.75rem;
+		margin-bottom: 0.5rem;
 	}
 
 	select {
