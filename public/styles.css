@@ -93,7 +93,7 @@ input[type='number'] {
 }
 
 input[type='date'] {
-	width: 90%;
+	width: 15%;
 	padding: 10px;
 	margin-bottom: 15px;
 	border: 1px solid #ccc;
@@ -101,8 +101,12 @@ input[type='date'] {
 	font-size: 16px;
 }
 
+#labelForDateSeen {
+	margin-left: 1rem;
+}
+
 select {
-	width: 80%;
+	width: 15%;
 	background-color: #f9f9f9;
 }
 
