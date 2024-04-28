@@ -1,7 +1,10 @@
 // Purpose: Frontend JavaScript code for the Birdwatcher application
 document.addEventListener('DOMContentLoaded', function () {
 	// Check if the current page is index.html
-	if (window.location.pathname === '/index.html' && window.location.pathname === ''/) {
+	if (
+		window.location.pathname === '/index.html' &&
+		window.location.pathname === '/'
+	) {
 		// Code specific to index.html
 		console.log('index.html loaded');
 		createListOfBirds(); // Call createListOfBirds() when the page is loaded
