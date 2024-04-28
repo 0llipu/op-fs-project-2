@@ -56,7 +56,8 @@ nav ul li a {
 	color: #fff;
 	border: none;
 	transition: 0.3s ease;
-	margin-left: 2rem;
+	margin-left: 1rem;
+	margin-right: 1rem;
 }
 
 nav ul li a:hover {
@@ -196,11 +197,9 @@ table {
 	#logo {
 		position: absolute;
 		left: 1rem;
-		font-size: 1rem;
+		font-size: 1.2rem;
 	}
-	nav ul li a {
-		margin-left: 0.5rem;
-	}
+
 	nav {
 		margin-right: 1rem;
 	}
@@ -228,6 +227,12 @@ table {
 
 	table {
 		border-spacing: 0.75rem; /* Adjust the spacing value as needed */
+	}
+
+	nav ul li a {
+		font-size: 0.85rem;
+		margin-left: 0.3rem;
+		margin-right: 0.3rem;
 	}
 }
 
