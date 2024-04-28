@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', function () {
 	// Check if the current page is index.html
 	if (
-		window.location.pathname === '/index.html' &&
+		window.location.pathname === '/index.html' ||
 		window.location.pathname === '/'
 	) {
 		// Code specific to index.html
