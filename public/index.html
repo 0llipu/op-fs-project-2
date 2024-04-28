@@ -10,19 +10,17 @@
         <h1>Birds App</h1>
         <p>Here You can find a listing with basic information of different sightings of birds seen.</p>
         <br>
-        <button id="refreshBirds">Refresh Birds</button> <!-- Button to refresh the list of birds -->
         <div id="birdsList">
             <br>
             <!-- Birds will be displayed here -->
         </div>
-
         <h1>More Information of specific bird sightings</h1>
         <p>To get more information of one sighting please select a sighting here and click on "More Info"</p>
         <br>
-        <label for="birdIdSelect">Select sighting:</label>
-        <select id="birdIdSelect"></select> <!-- Dropdown menu for selecting bird ID -->
-        <button onclick="getBird()">More info</button>
-
+        <select id="birdIdSelect">
+            <option value="" selected>Select a sighting:</option>
+        </select>
+        <!-- Dropdown menu for selecting bird ID -->
         <div id="response"></div>
         <br>
         <div id="info"></div>
@@ -49,10 +47,8 @@
             <br>
             <label for="dateSeen">Date the bird was seen:</label>
             <input type="date" id="dateSeen" name="dateSeen">
-
             <button type="submit">Add Bird</button>
         </form>
-
         <script src="script.js"></script>
     </body>
 </html>

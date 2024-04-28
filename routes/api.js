@@ -37,7 +37,7 @@ router.get('/:id', async (req, res) => {
 		const birdName = birdNameWithId.birdName;
 		// Send the bird's id and name in the response
 		console.log(
-			`Get route is working and the bird was found with an ID: ${birdId} and the name: ${birdName} for the bird`
+			`Get route is working and the bird was found with an ID: ${birdId} and the name for the bird is: ${birdName} `
 		);
 	} catch (err) {
 		// Error handling
