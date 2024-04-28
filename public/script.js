@@ -81,15 +81,7 @@ async function createListOfBirds() {
 		// Iterate through each bird and create a table row for each
 		birds.forEach((bird) => {
 			const birdDate = new Date(bird.dateSeen); // Create a new Date object from the dateSeen field
-			const options = {
-				year: '4-digit',
-				month: '2-digit',
-				day: '2-digit',
-			};
-			const formattedDate = birdDate
-				.toLocaleDateString('en-US', options)
-				.replace(/\//g, '.');
-
+			const formattedDate = birdDate.toLocaleDateString(); // Format the date as a string
 			// Create a table row for the bird item
 			const row = document.createElement('tr');
 			// Create table data for each field
