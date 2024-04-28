@@ -2,16 +2,35 @@
 
 // Run function to get all birds and populate the dropdown menu with bird IDs when the page is loaded
 window.onload = function () {
-	getAllBirds(); // Call getAllBirds() when the page is loaded
-	populateBirdIds(); // Call populateBirdIds() when the page is loaded
+	createListOfBirds(); // Call createListOfBirds() when the page is loaded
+	populateDropdownMenu(); // Call populateDropdownMenu() when the page is loaded
 };
 
-// Define the infoDiv and responseDiv elements as global variables
+// Define the infoDiv, responseDiv and dropdownMenu elements as global variables
 const infoDiv = document.getElementById('info');
 const responseDiv = document.getElementById('response');
-// Get the dropdown menu element as a global variable
 const dropdownMenu = document.getElementById('birdIdSelect');
 
+// Add an event listener to the dropdown menu
+dropdownMenu.addEventListener('change', function () {
+	// Get the selected option
+	const selectedOption = dropdownMenu.options[dropdownMenu.selectedIndex];
+	// Get the ID of the selected bird
+	const selectedBirdId = selectedOption.value;
+
+	// Call the moreInfoForBirdFromDropdownMenu function with the selected bird ID
+	moreInfoForBirdFromDropdownMenu(selectedBirdId);
+});
+
+// Add an event listener to the addBirdForm to call the addBirdToDatabase function when the form is submitted
+document
+	.getElementById('addBirdForm')
+	.addEventListener('submit', async function (event) {
+		event.preventDefault(); // Prevent the default form submission behavior
+		addBirdToDatabase(this); // Call the addBirdToDatabase function when the form is submitted with the form element as an argument
+	});
+
+// Function to fetch all birds from the server and return the bird details object
 async function fetchAllBirds() {
 	// Fetch all birds from the server via a GET request to the /api/getall route
 	try {
@@ -35,7 +54,7 @@ async function fetchAllBirds() {
 }
 
 // Function to get all birds from the server and display them in the birdsList container
-async function getAllBirds() {
+async function createListOfBirds() {
 	// Fetch all birds from the server with a GET request to the /api/getall route
 	try {
 		const birds = await fetchAllBirds(); // Fetch all birds from the server
@@ -57,19 +76,8 @@ async function getAllBirds() {
 	}
 }
 
-// Add an event listener to the dropdown menu
-dropdownMenu.addEventListener('change', function () {
-	// Get the selected option
-	const selectedOption = dropdownMenu.options[dropdownMenu.selectedIndex];
-	// Get the ID of the selected bird
-	const selectedBirdId = selectedOption.value;
-
-	// Call the getBird function with the selected bird ID
-	getBird(selectedBirdId);
-});
-
 // Function to populate the dropdown menu with bird IDs from the server and display the bird details when a bird ID is selected
-async function populateBirdIds() {
+async function populateDropdownMenu() {
 	// Fetch all birds from the server with a GET request to the /api/getall route
 	try {
 		const birds = await fetchAllBirds(); // Fetch all birds from the server
@@ -100,15 +108,8 @@ async function populateBirdIds() {
 	}
 }
 
-// Add an event listener to the addBirdForm to call the addBird function when the form is submitted
-document
-	.getElementById('addBirdForm')
-	.addEventListener('submit', async function (event) {
-		event.preventDefault(); // Prevent the default form submission behavior
-		addBird(this); // Call the addBird function when the form is submitted
-	});
 // Function to add a new bird to the database
-async function addBird(form) {
+async function addBirdToDatabase(form) {
 	// Add a new bird to the database via a POST request to the /api/add route
 	try {
 		// Get the form data and convert it to a JSON object
@@ -144,8 +145,8 @@ async function addBird(form) {
 			alert(errorMessage); // Display an alert with the error message
 		} else {
 			form.reset(); // Reset the form
-			getAllBirds(); // Call getAllBirds() when bird is added
-			populateBirdIds(); // Call populateBirdIds() when bird is added
+			createListOfBirds(); // Call createListOfBirds() when bird is added
+			populateDropdownMenu(); // Call populateDropdownMenu() when bird is added
 			infoDiv.innerHTML = ''; // Clear the infoDiv
 			infoDiv.innerHTML = 'Bird added successfully!'; // Show information of addition in the infoDiv
 		}
@@ -153,46 +154,6 @@ async function addBird(form) {
 	} catch (err) {
 		console.error('Error:', err);
 		alert('An error occurred while adding the bird.'); // Display generic error message
-	}
-}
-
-// Function to get a bird with the specified ID and display the bird details
-async function getBird() {
-	// Get the bird ID from the dropdown menu and fetch the bird details from the server
-	const id = dropdownMenu.value;
-	infoDiv.innerHTML = ''; // Clear the infoDiv	'
-	// Fetch the bird details with fetchBirdInfo function and the bird ID as an argument
-	try {
-		const bird = await fetchBirdInfo(id);
-		// Create a div element to contain the bird data and buttons
-		const birdDiv = document.createElement('div');
-		// Set the inner HTML of the birdDiv to display the bird details in a readable format with line breaks
-		birdDiv.innerHTML = `<br> User name: ${bird.userName} <br> Bird: ${
-			bird.birdName
-		} <br> Bird in latin: ${bird.latinBirdName} <br> Wingspan: ${
-			bird.wingSpan
-		} cm <br> Sex: ${bird.sex} <br> Date seen: ${new Date(
-			bird.dateSeen
-		).toLocaleDateString()} <br> Date added: ${new Date(
-			bird.dateAdded
-		).toLocaleDateString()} <br><br><strong> If You wish to update or delete a bird You can do it here but be careful with Your actions, there is no possibilities to undo what You do. <strong><br><br>`;
-		// Create an update button to update the bird information and add a click event listener to call the formUpdateBird function with the bird ID as an argument
-		const updateButton = document.createElement('button'); // Create a new button element for the update button
-		updateButton.textContent = 'Update bird information'; // Set the text content of the update button to "Update bird information"
-		updateButton.onclick = () => formUpdateBird(bird._id); // Add a click event listener to the update button to call the formUpdateBird function with the bird ID as an argument
-		birdDiv.appendChild(updateButton); // Append the update button to the birdDiv
-		// Create delete button to delete the bird and add a click event listener to call the deleteBird function with the bird ID as an argument
-		const deleteButton = document.createElement('button'); // Create a new button element for the delete button
-		deleteButton.textContent = 'Delete this bird'; // Set the text content of the delete button to "Delete this bird"
-		deleteButton.onclick = () => deleteBird(bird._id); // Add a click event listener to the delete button to call the deleteBird function with the bird ID as an argument
-		birdDiv.appendChild(deleteButton); // Append the delete button to the birdDiv
-		// Clear the responseDiv and append the birdDiv
-		responseDiv.innerHTML = '';
-		responseDiv.appendChild(birdDiv);
-		// Catch any errors that occur during the fetch request and display an error message in the responseDiv
-	} catch (err) {
-		responseDiv.innerHTML = 'Error: Bird not found'; // Display an error message in the responseDiv
-		console.error(err); // Log the error to the console
 	}
 }
 
@@ -217,6 +178,46 @@ async function fetchBirdInfo(id) {
 	}
 }
 
+// Function to get a bird with the specified ID and display the bird details
+async function moreInfoForBirdFromDropdownMenu() {
+	// Get the bird ID from the dropdown menu and fetch the bird details from the server
+	const id = dropdownMenu.value;
+	infoDiv.innerHTML = ''; // Clear the infoDiv	'
+	// Fetch the bird details with fetchBirdInfo function and the bird ID as an argument
+	try {
+		const bird = await fetchBirdInfo(id);
+		// Create a div element to contain the bird data and buttons
+		const birdDiv = document.createElement('div');
+		// Set the inner HTML of the birdDiv to display the bird details in a readable format with line breaks
+		birdDiv.innerHTML = `<br> User name: ${bird.userName} <br> Bird: ${
+			bird.birdName
+		} <br> Bird in latin: ${bird.latinBirdName} <br> Wingspan: ${
+			bird.wingSpan
+		} cm <br> Sex: ${bird.sex} <br> Date seen: ${new Date(
+			bird.dateSeen
+		).toLocaleDateString()} <br> Date added: ${new Date(
+			bird.dateAdded
+		).toLocaleDateString()} <br><br><strong> If You wish to update or delete a bird You can do it here but be careful with Your actions, there is no possibilities to undo what You do. <strong><br><br>`;
+		// Create an update button to update the bird information and add a click event listener to call the formToUpdateBird function with the bird ID as an argument
+		const updateButton = document.createElement('button'); // Create a new button element for the update button
+		updateButton.textContent = 'Update bird information'; // Set the text content of the update button to "Update bird information"
+		updateButton.onclick = () => formToUpdateBird(bird._id); // Add a click event listener to the update button to call the formToUpdateBird function with the bird ID as an argument
+		birdDiv.appendChild(updateButton); // Append the update button to the birdDiv
+		// Create delete button to delete the bird and add a click event listener to call the deleteBird function with the bird ID as an argument
+		const deleteButton = document.createElement('button'); // Create a new button element for the delete button
+		deleteButton.textContent = 'Delete this bird'; // Set the text content of the delete button to "Delete this bird"
+		deleteButton.onclick = () => deleteBird(bird._id); // Add a click event listener to the delete button to call the deleteBird function with the bird ID as an argument
+		birdDiv.appendChild(deleteButton); // Append the delete button to the birdDiv
+		// Clear the responseDiv and append the birdDiv
+		responseDiv.innerHTML = '';
+		responseDiv.appendChild(birdDiv);
+		// Catch any errors that occur during the fetch request and display an error message in the responseDiv
+	} catch (err) {
+		responseDiv.innerHTML = 'Error: Bird not found'; // Display an error message in the responseDiv
+		console.error(err); // Log the error to the console
+	}
+}
+
 // Helper function to create a single input field
 function createInputField(name, value, readonly = false) {
 	const inputField = document.createElement('input');
@@ -228,7 +229,7 @@ function createInputField(name, value, readonly = false) {
 }
 
 // Function to update a bird with the specified ID and display the update form with the current bird details
-async function formUpdateBird(id) {
+async function formToUpdateBird(id) {
 	// Function to update a bird with the specified ID
 	try {
 		const bird = await fetchBirdInfo(id); // Fetch the current bird details from the server
@@ -328,7 +329,7 @@ async function formUpdateBird(id) {
 		cancelButton.onclick = (event) => {
 			// Add a click event listener to the cancel button to cancel the update process
 			event.preventDefault(); // Prevent default form submission behavior
-			getBird(id); // Call getBird() to display the bird information if the cancel button is clicked
+			moreInfoForBirdFromDropdownMenu(id); // Call moreInfoForBirdFromDropdownMenu() to display the bird information if the cancel button is clicked
 			infoDiv.innerHTML = 'Updating canceled by the user.'; // Clear the infoDiv
 		};
 		form.appendChild(cancelButton); // Append the cancel button to the form
@@ -393,7 +394,7 @@ async function saveUpdatedBird(id, modifiedFields) {
 			// Log the error message to the console and display an error message in the infoDiv
 		} else {
 			// Display a success message in the infoDiv if the update is successful
-			getBird(id); // Call getBird() to display updated bird information'
+			moreInfoForBirdFromDropdownMenu(id); // Call moreInfoForBirdFromDropdownMenu() to display updated bird information'
 			infoDiv.innerHTML = 'Bird information updated successfully!'; // Show information of update in the infoDiv
 			console.log('Bird information updated successfully!'); // Log success message
 		}
@@ -431,8 +432,8 @@ async function deleteBird(id) {
 							// Fetch the bird details from the server via a DELETE request to the /api/delete/:id route
 							method: 'DELETE',
 						});
-						getAllBirds(); // Call getAllBirds() when bird is deleted
-						populateBirdIds(); // Call populateBirdIds() when bird is deleted
+						createListOfBirds(); // Call createListOfBirds() when bird is deleted
+						populateDropdownMenu(); // Call populateDropdownMenu() when bird is deleted
 						responseDiv.innerHTML = ''; // Clear the responseDiv
 						infoDiv.innerHTML = 'Bird deleted successfully!'; // Show information of deletion in the infoDiv
 						console.log('Bird deleted successfully!'); // Log success message
