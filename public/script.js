@@ -181,7 +181,7 @@ async function moreInfoForBirdFromDropdownMenu() {
 			bird.dateSeen
 		).toLocaleDateString()} <br> Date added: ${new Date(
 			bird.dateAdded
-		).toLocaleDateString()} <br><br><p id="warning"> You can update or delete a bird here but be careful, <br> there is no possibilities to undo deleting. </p><br>`;
+		).toLocaleDateString()} <br><br><p id="warning"> You can update or delete a bird here but be careful, <br> there is no possibilities to undo anything. </p><br>`;
 		// Create an update button to update the bird information and add a click event listener to call the formToUpdateBird function with the bird ID as an argument
 		const updateButton = document.createElement('button'); // Create a new button element for the update button
 		updateButton.id = 'updateButton'; // Set the id of the update button to "updateButton"
