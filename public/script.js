@@ -1,11 +1,10 @@
 // Purpose: Frontend JavaScript code for the Birdwatcher application
-window.onload = function () {
+document.addEventListener('DOMContentLoaded', function () {
 	// Check if the current page is index.html
 	if (window.location.pathname === '/index.html') {
 		// Code specific to index.html
 		console.log('index.html loaded');
 		createListOfBirds(); // Call createListOfBirds() when the page is loaded
-		// Add your specific functionality here
 	}
 	// Check if the current page is birdinfo.html
 	else if (window.location.pathname === '/birdinfo.html') {
@@ -19,7 +18,6 @@ window.onload = function () {
 				dropdownMenu.options[dropdownMenu.selectedIndex];
 			// Get the ID of the selected bird
 			const selectedBirdId = selectedOption.value;
-
 			// Call the moreInfoForBirdFromDropdownMenu function with the selected bird ID
 			moreInfoForBirdFromDropdownMenu(selectedBirdId);
 		});
@@ -36,9 +34,8 @@ window.onload = function () {
 			});
 
 		console.log('addbird.html loaded');
-		// Add your specific functionality here
 	}
-};
+});
 
 // Define the infoDiv, responseDiv and dropdownMenu elements as global variables
 const infoDiv = document.getElementById('info');
