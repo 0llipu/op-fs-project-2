@@ -22,33 +22,35 @@
         <main>
 
 
-            <h1>Add Bird</h1>
+            <h2>Add Bird</h2>
+            <p>Here You can add a bird with details to the database.</p>
             <div id="info"></div>
             <form id="addBirdForm">
-                <label for="userName">User Name:</label>
+                <label for="userName">Birdwatcher:</label>
                 <input type="text" id="userName" name="userName" placeholder="Please enter Your name.." required>
                 <br>
-                <label for="birdName">Bird Name:</label>
+                <label for="birdName">Bird:</label>
                 <input type="text" id="birdName" name="birdName" placeholder="eg. Lokki.." required>
                 <br>
-                <label for="latinBirdName">Latin Bird Name:</label>
-                <input type="text" id="latinBirdName" name="latinBirdName" placeholder="Can be left empty">
+                <label for="latinBirdName">Bird in latin:</label>
+                <input type="text" id="latinBirdName" name="latinBirdName" placeholder="Leave empty if not known..">
                 <br>
                 <label for="wingSpan">Wing Span:</label>
-                <input type="number" id="wingSpan" name="wingSpan" placeholder="At least take a guess" required>
+                <input type="number" id="wingSpan" name="wingSpan"
+                    placeholder="Take a guess at least, can't left empty.." required>
                 <br>
-                <label for="sex">Sex:</label>
+                <label for="sex">Sex:</label><br>
                 <select id="sex" name="sex" required>
                     <option value="undefined">Undefined</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
-                </select>
-                <label for="dateSeen" id="labelForDateSeen">Date the bird was seen:</label>
+                </select><br>
+                <label for="dateSeen" id="labelForDateSeen">Date the bird was seen:</label><br>
                 <input type="date" id="dateSeen" name="dateSeen"><br>
                 <button type="submit" id="addButton">Add Bird</button>
             </form>
         </main>
-        <footer></footer>
+        <footer>Olli Puustinen / Laurea UAS</footer>
         <script src="script.js"></script>
     </body>
 </html>

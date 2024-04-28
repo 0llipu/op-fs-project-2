@@ -75,18 +75,36 @@ async function createListOfBirds() {
 		const birds = await fetchAllBirds(); // Fetch all birds from the server
 		const birdsListContainer = document.getElementById('birdsList'); // Get the birdsList container element
 		// Clear existing content and add a line break
-		birdsListContainer.innerHTML = '<br>';
-		// Add each bird to the list container
+		birdsListContainer.innerHTML = '';
+		// Create a table element
+		const table = document.createElement('table');
+		// Iterate through each bird and create a table row for each
 		birds.forEach((bird) => {
-			const birdItem = document.createElement('div'); // Create a new div element for the bird item
 			const birdDate = new Date(bird.dateSeen); // Create a new Date object from the dateSeen field
-			const formattedDate = birdDate.toLocaleDateString(); // Format the date as a string in the format MM/DD/YYYY
-			birdItem.textContent = `User name: ${bird.userName}, Bird: ${bird.birdName}, Date seen: ${formattedDate} `; // Set the text content of the bird item div element with the bird details
-			// Add the bird item to the birdsList container
-			birdsListContainer.appendChild(birdItem);
+			const options = {
+				year: '2-digit',
+				month: '2-digit',
+				day: '2-digit',
+			};
+			const formattedDate = birdDate
+				.toLocaleDateString('en-US', options)
+				.replace(/\//g, '.');
+
+			// Create a table row for the bird item
+			const row = document.createElement('tr');
+			// Create table data for each field
+			row.innerHTML = `
+                <td>${bird.birdName} </td>
+				<td><strong>Birdwatcher: </strong>${bird.userName} </td>
+                <td><strong>Date: </strong>${formattedDate}</td>
+            `;
+			// Append the row to the table
+			table.appendChild(row);
 		});
-		// Catch any errors that occur during the fetch request
+		// Append the table to the birdsList container
+		birdsListContainer.appendChild(table);
 	} catch (err) {
+		// Catch any errors that occur during the fetch request
 		console.error('Error:', err);
 	}
 }
@@ -110,10 +128,10 @@ async function populateDropdownMenu() {
 			const option = document.createElement('option');
 			// Set the value and text content of the option element to the bird ID and bird details
 			option.value = bird._id; // Set the value of the option to the bird ID
-			option.textContent = `${bird.birdName} - User: ${
+			option.textContent = `${bird.birdName} - Birdwatcher: ${
 				// Set the text content of the option to the bird name and user name
 				bird.userName // Get the user name from the bird object
-			}, Date Seen: ${new Date(bird.dateSeen).toLocaleDateString()}`; // Get the date seen from the bird object and format it as a string
+			} - Date: ${new Date(bird.dateSeen).toLocaleDateString()}`; // Get the date seen from the bird object and format it as a string
 			// Append the option to the select element
 			dropdownMenu.appendChild(option);
 		});
@@ -163,7 +181,7 @@ async function moreInfoForBirdFromDropdownMenu() {
 			bird.dateSeen
 		).toLocaleDateString()} <br> Date added: ${new Date(
 			bird.dateAdded
-		).toLocaleDateString()} <br><br><p id="warning"> You can update or delete a bird here but be careful, <br> there is no possibilities to undo anything. </p><br>`;
+		).toLocaleDateString()} <br><br><p id="warning"> You can update or delete a bird here but be careful, <br> there is no possibilities to undo deleting. </p><br>`;
 		// Create an update button to update the bird information and add a click event listener to call the formToUpdateBird function with the bird ID as an argument
 		const updateButton = document.createElement('button'); // Create a new button element for the update button
 		updateButton.id = 'updateButton'; // Set the id of the update button to "updateButton"
@@ -466,7 +484,9 @@ async function deleteBird(id) {
 			}
 			// Display an alert if the user does not enter the bird name and the deletion is aborted
 		} else {
-			alert('Please enter the name of the bird to confirm deletion.');
+			alert(
+				'Deletion aborted. Please enter the bird name to confirm deletion.'
+			);
 		}
 		// Catch any errors that occur during the fetch request and log the error to the console
 	} catch (err) {
