@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Birds App - Add Bird to db</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <header>
+            <nav>
+                <a href="index.html" id="logo">
+                    Birds App
+                </a>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="addbird.html">Add Bird</a></li>
+                    <li><a href="birdinfo.html">Specific Sighting</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+
+
+            <h1>Add Bird</h1>
+            <div id="info"></div>
+            <form id="addBirdForm">
+                <label for="userName">User Name:</label>
+                <input type="text" id="userName" name="userName" placeholder="Please enter Your name.." required>
+                <br>
+                <label for="birdName">Bird Name:</label>
+                <input type="text" id="birdName" name="birdName" placeholder="eg. Lokki.." required>
+                <br>
+                <label for="latinBirdName">Latin Bird Name:</label>
+                <input type="text" id="latinBirdName" name="latinBirdName" placeholder="Can be left empty">
+                <br>
+                <label for="wingSpan">Wing Span:</label>
+                <input type="number" id="wingSpan" name="wingSpan" placeholder="At least take a guess" required>
+                <br>
+                <label for="sex">Sex:</label>
+                <select id="sex" name="sex" required>
+                    <option value="undefined">Undefined</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+                <br>
+                <label for="dateSeen">Date the bird was seen:</label>
+                <input type="date" id="dateSeen" name="dateSeen">
+                <button type="submit" id="addButton">Add Bird</button>
+            </form>
+        </main>
+        <footer></footer>
+        <script src="script.js"></script>
+    </body>
+</html>

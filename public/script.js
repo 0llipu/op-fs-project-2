@@ -1,34 +1,49 @@
 // Purpose: Frontend JavaScript code for the Birdwatcher application
-
-// Run function to get all birds and populate the dropdown menu with bird IDs when the page is loaded
 window.onload = function () {
-	createListOfBirds(); // Call createListOfBirds() when the page is loaded
-	populateDropdownMenu(); // Call populateDropdownMenu() when the page is loaded
+	// Check if the current page is index.html
+	if (window.location.pathname === '/index.html') {
+		// Code specific to index.html
+		console.log('index.html loaded');
+		createListOfBirds(); // Call createListOfBirds() when the page is loaded
+		// Add your specific functionality here
+	}
+	// Check if the current page is birdinfo.html
+	else if (window.location.pathname === '/birdinfo.html') {
+		// Code specific to birdinfo.html
+		console.log('birdinfo.html loaded');
+		populateDropdownMenu(); // Call populateDropdownMenu() when the page is loaded
+		// Add an event listener to the dropdown menu
+		dropdownMenu.addEventListener('change', function () {
+			// Get the selected option
+			const selectedOption =
+				dropdownMenu.options[dropdownMenu.selectedIndex];
+			// Get the ID of the selected bird
+			const selectedBirdId = selectedOption.value;
+
+			// Call the moreInfoForBirdFromDropdownMenu function with the selected bird ID
+			moreInfoForBirdFromDropdownMenu(selectedBirdId);
+		});
+	}
+	// Check if the current page is addbird.html
+	else if (window.location.pathname === '/addbird.html') {
+		// Code specific to addbird.html
+		// Add an event listener to the addBirdForm to call the addBirdToDatabase function when the form is submitted
+		document
+			.getElementById('addBirdForm')
+			.addEventListener('submit', async function (event) {
+				event.preventDefault(); // Prevent the default form submission behavior
+				addBirdToDatabase(this); // Call the addBirdToDatabase function when the form is submitted with the form element as an argument
+			});
+
+		console.log('addbird.html loaded');
+		// Add your specific functionality here
+	}
 };
 
 // Define the infoDiv, responseDiv and dropdownMenu elements as global variables
 const infoDiv = document.getElementById('info');
 const responseDiv = document.getElementById('response');
 const dropdownMenu = document.getElementById('birdIdSelect');
-
-// Add an event listener to the dropdown menu
-dropdownMenu.addEventListener('change', function () {
-	// Get the selected option
-	const selectedOption = dropdownMenu.options[dropdownMenu.selectedIndex];
-	// Get the ID of the selected bird
-	const selectedBirdId = selectedOption.value;
-
-	// Call the moreInfoForBirdFromDropdownMenu function with the selected bird ID
-	moreInfoForBirdFromDropdownMenu(selectedBirdId);
-});
-
-// Add an event listener to the addBirdForm to call the addBirdToDatabase function when the form is submitted
-document
-	.getElementById('addBirdForm')
-	.addEventListener('submit', async function (event) {
-		event.preventDefault(); // Prevent the default form submission behavior
-		addBirdToDatabase(this); // Call the addBirdToDatabase function when the form is submitted with the form element as an argument
-	});
 
 // Function to fetch all birds from the server and return the bird details object
 async function fetchAllBirds() {
@@ -208,8 +223,6 @@ async function addBirdToDatabase(form) {
 			alert(errorMessage); // Display an alert with the error message
 		} else {
 			form.reset(); // Reset the form
-			createListOfBirds(); // Call createListOfBirds() when bird is added
-			populateDropdownMenu(); // Call populateDropdownMenu() when bird is added
 			infoDiv.innerHTML = ''; // Clear the infoDiv
 			infoDiv.innerHTML = 'Bird added successfully!'; // Show information of addition in the infoDiv
 		}
@@ -436,7 +449,6 @@ async function deleteBird(id) {
 							// Fetch the bird details from the server via a DELETE request to the /api/delete/:id route
 							method: 'DELETE',
 						});
-						createListOfBirds(); // Call createListOfBirds() when bird is deleted
 						populateDropdownMenu(); // Call populateDropdownMenu() when bird is deleted
 						responseDiv.innerHTML = ''; // Clear the responseDiv
 						infoDiv.innerHTML = 'Bird deleted successfully!'; // Show information of deletion in the infoDiv

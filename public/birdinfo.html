@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Birds App - Home</title>
+        <title>Birds App - More information of a specific sighting</title>
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
@@ -21,11 +21,16 @@
         </header>
         <main>
 
-            <p>Here You can find a listing with basic information of different sightings of birds seen.</p>
-            <div id="birdsList">
-                <!-- Birds will be displayed here -->
-            </div>
+            <h1>More Information of specific bird sightings</h1>
+            <p>To get more information of one sighting please select a sighting here from the dropdown menu</p>
             <br>
+            <select id="birdIdSelect">
+                <option value="" selected>Select a sighting:</option>
+            </select>
+            <!-- Dropdown menu for selecting bird ID -->
+            <div id="response"></div>
+            <br>
+            <div id="info"></div>
         </main>
         <footer></footer>
         <script src="script.js"></script>
