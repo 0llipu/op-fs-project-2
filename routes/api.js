@@ -10,8 +10,9 @@ router.get('/getall', async (req, res) => {
 	try {
 		// Find all birds in the database with the find() method and store them in the birds variable
 		const birds = await bird.find();
-		console.log('Every bird in the database listed here:');
-		console.log(birds);
+		console.log(
+			'Get all route is working and all of the bird data is fetched from the db successfully!'
+		);
 		res.status(200).json(birds); // Send status code 200 to client for successful response and also send the birds in JSON format
 	} catch (err) {
 		// Error handling
@@ -65,9 +66,11 @@ router.post('/add', async (req, res) => {
 		});
 		// Save the new bird document to the database
 		await newBird.save();
-		console.log(`Bird named: ${newBird.birdName} added successfully to db`);
+		console.log(
+			`Add route is working and the bird: ${newBird.birdName} added successfully to db`
+		);
 		res.status(200).send(
-			`Add route is working and the bird named: ${newBird.birdName} added successfully to db`
+			`Add route is working and the bird: ${newBird.birdName} added successfully to db`
 		); // Send status code 200 to client for successful response and also send a success message to the client aswell as to the console
 	} catch (err) {
 		// Error handling
@@ -92,7 +95,7 @@ router.delete('/delete/:id', async (req, res) => {
 		res.status(200).send(
 			'Bird with ID: ' + birdId + ' deleted successfully'
 		); // Send status code 200 to client for successful response and also send a success message to the client
-		console.log('Bird deleted successfully:', deletedBird); // Log the deleted bird to the console
+		console.log('Bird with ID: ' + birdId + ' deleted successfully'); // Log the deleted bird to the console
 	} catch (err) {
 		// Error handling
 		console.error(err);
@@ -127,9 +130,11 @@ router.put('/update/:id', async (req, res) => {
 			return res.status(404).send('Bird not found');
 		}
 		// Send the updated bird in the response
-		res.status(200).send(updatedBird);
+		res.status(200).send(
+			'Bird with ID: ' + birdId + ' updated successfully!'
+		);
 		// Log the updated bird to the console
-		console.log('Bird updated with this information:', updatedBird); // Send status code 200 to client for successful response and also send the updated bird to the client
+		console.log('Bird with ID: ' + birdId + ' updated successfully!'); // Send status code 200 to client for successful response and also send the updated bird to the client
 	} catch (err) {
 		// Error handling
 		console.error(err);
