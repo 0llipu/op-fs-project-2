@@ -189,6 +189,10 @@ table {
 	font-weight: bold;
 }
 
+#info {
+	font-weight: 700;
+}
+
 /* Media queries for responsiveness */
 @media screen and (max-width: 700px) {
 	/* Adjustments for tablets and PCs */
